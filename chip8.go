@@ -27,7 +27,7 @@ type Chip8 struct {
 	soundTimer uint8
 	stack      [16]uint16
 	sp         uint16
-	keyboard   [16]byte
+	key        [16]byte
 
 	drawFlag bool
 }
@@ -124,21 +124,6 @@ func (chip8 *Chip8) fetchOpcode() uint16 {
 	return firstByte<<8 | secondByte
 }
 
-func (chip8 *Chip8) decodeOpcode(opcode uint16) {
-
-	// TODO: more opcodes
-	switch opcode & 0xF000 {
-	case 0xA000:
-		chip8.I = opcode & 0x0FFF
-		chip8.pc += 2
-		break
-
-	default:
-		log.Fatal(fmt.Sprintf("Unknown opcode %x", opcode))
-	}
-
-}
-
 func (chip8 *Chip8) updateDelayTimer() {
 	if chip8.delayTimer > 0 {
 		chip8.delayTimer--
@@ -156,4 +141,20 @@ func (chip8 *Chip8) updateSoundTimer() {
 
 func (chip8 *Chip8) makeSound() {
 	fmt.Println("BEEP!")
+}
+
+func (chip8 *Chip8) drawGraphics() {
+
+}
+
+func (chip8 *Chip8) setKeys() {
+
+}
+
+func (chip8 *Chip8) moveOnToNextInstruction() {
+	chip8.pc += 2
+}
+
+func (chip8 *Chip8) skipNextInstruction() {
+	chip8.pc += 4
 }
