@@ -108,8 +108,16 @@ func (chip8 *Chip8) decodeOpcode(opcode uint16) {
 		break
 
 	case 0xD000:
+		// TODO
 		break
 
+	case 0xE000:
+		// TODO
+		break
+
+	case 0xF000:
+		chip8.fOperations(opcode)
+		break
 	default:
 		log.Fatal(fmt.Sprintf("Unknown opcode %x", opcode))
 	}
@@ -176,6 +184,54 @@ func (chip8 *Chip8) logicOperations(opcode uint16) {
 			chip8.V[15] = 0
 		}
 		chip8.V[registerIndex1] = chip8.V[registerIndex1] << 1
+		break
+	}
+}
+
+func (chip8 *Chip8) fOperations(opcode uint16) {
+	registerIndex := getNibblesFromTwoBytes(opcode, 1, 2)
+	switch opcode & 0x00FF {
+	case 0x0007:
+		chip8.V[registerIndex] = chip8.delayTimer
+		break
+
+	case 0x000A:
+		// TODO
+		break
+
+	case 0x0015:
+		chip8.delayTimer = chip8.V[registerIndex]
+		break
+
+	case 0x0018:
+		chip8.soundTimer = chip8.V[registerIndex]
+		break
+
+	case 0x001E:
+		chip8.I += uint16(chip8.V[registerIndex])
+		break
+
+	case 0x0029:
+		// TODO
+		break
+
+	case 0x0033:
+		registerValue := chip8.V[registerIndex]
+		chip8.memory[chip8.I] = registerValue / 100
+		chip8.memory[chip8.I+1] = (registerValue / 10) % 10
+		chip8.memory[chip8.I+2] = registerValue % 10
+		break
+
+	case 0x0055:
+		for i := uint16(0); i <= registerIndex; i++ {
+			chip8.memory[chip8.I+i] = chip8.V[i]
+		}
+		break
+
+	case 0x0065:
+		for i := uint16(0); i <= registerIndex; i++ {
+			chip8.V[i] = chip8.memory[chip8.I+i]
+		}
 		break
 	}
 }
