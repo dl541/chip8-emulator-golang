@@ -17,26 +17,26 @@ type Chip8 struct {
 	// pc: Program counter
 	// graphics dimension = 64*32 = 2048
 	// sp: stack pointer
-	opcode     uint16
-	memory     [4096]byte
-	V          [16]byte
-	I          uint16
-	pc         uint16
-	gfx        [64 * 32]byte
-	delayTimer uint8
-	soundTimer uint8
-	stack      [16]uint16
-	sp         uint16
-	key        [16]byte
+	opcode         uint16
+	memory         [4096]byte
+	V              [16]byte
+	I              uint16
+	programCounter uint16
+	graphics       [64 * 32]byte
+	delayTimer     uint8
+	soundTimer     uint8
+	stack          [16]uint16
+	stackPointer   uint16
+	key            [16]byte
 
 	drawFlag bool
 }
 
 func (chip8 *Chip8) initialize() {
-	chip8.pc = 0x200
+	chip8.programCounter = 0x200
 	chip8.opcode = 0
 	chip8.I = 0
-	chip8.sp = 0
+	chip8.stackPointer = 0
 
 	chip8.clearDisplay()
 	chip8.clearStack()
@@ -49,7 +49,7 @@ func (chip8 *Chip8) initialize() {
 
 func (chip8 *Chip8) clearDisplay() {
 	var emptyScreen [64 * 32]byte
-	chip8.gfx = emptyScreen
+	chip8.graphics = emptyScreen
 }
 
 func (chip8 *Chip8) clearStack() {
@@ -119,8 +119,8 @@ func (chip8 *Chip8) emulateCycle() {
 }
 
 func (chip8 *Chip8) fetchOpcode() uint16 {
-	firstByte := uint16(chip8.memory[chip8.pc])
-	secondByte := uint16(chip8.memory[chip8.pc+1])
+	firstByte := uint16(chip8.memory[chip8.programCounter])
+	secondByte := uint16(chip8.memory[chip8.programCounter+1])
 	return firstByte<<8 | secondByte
 }
 
@@ -152,9 +152,9 @@ func (chip8 *Chip8) setKeys() {
 }
 
 func (chip8 *Chip8) moveOnToNextInstruction() {
-	chip8.pc += 2
+	chip8.programCounter += 2
 }
 
 func (chip8 *Chip8) skipNextInstruction() {
-	chip8.pc += 4
+	chip8.programCounter += 4
 }
