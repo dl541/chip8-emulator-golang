@@ -30,6 +30,7 @@ type Chip8 struct {
 	key            [16]byte
 
 	drawFlag bool
+	graphicsDrawer
 }
 
 func (chip8 *Chip8) initialize() {
@@ -45,6 +46,8 @@ func (chip8 *Chip8) initialize() {
 
 	chip8.delayTimer = chip8.getInitialClockCount()
 	chip8.soundTimer = chip8.getInitialClockCount()
+
+	chip8.graphicsDrawer = graphicsDrawer{width:64, height: 32}
 }
 
 func (chip8 *Chip8) clearDisplay() {
@@ -144,7 +147,7 @@ func (chip8 *Chip8) makeSound() {
 }
 
 func (chip8 *Chip8) drawGraphics() {
-
+	chip8.clearAndDraw(chip8.graphics[:])
 }
 
 func (chip8 *Chip8) setKeys() {
